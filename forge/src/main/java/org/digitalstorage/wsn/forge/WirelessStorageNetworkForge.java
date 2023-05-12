@@ -1,6 +1,8 @@
 package org.digitalstorage.wsn.forge;
 
 import dev.architectury.platform.forge.EventBuses;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import org.digitalstorage.wsn.WirelessStorageNetwork;
@@ -16,16 +18,15 @@ import static org.digitalstorage.wsn.core.CommonConstants.MODID;
 
 @Mod(MODID)
 public class WirelessStorageNetworkForge {
+
     public WirelessStorageNetworkForge() {
         // Submit our event bus to let architectury register our content on the right time
         EventBuses.registerModEventBus(MODID, FMLJavaModLoadingContext.get().getModEventBus());
         WirelessStorageNetwork.init();
 
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        Consumer<DeferredRegister> REGISTER_CONSUMER = (register -> register.register(bus));
-
-        WSNBlocks.init(REGISTER_CONSUMER);
-        WSNBlockTiles.init(REGISTER_CONSUMER);
-        WSNItems.init(REGISTER_CONSUMER);
+        IEventBus BUS = FMLJavaModLoadingContext.get().getModEventBus();
+        WSNBlocks.init(BUS);
+        WSNBlockTiles.init(BUS);
+        WSNItems.init(BUS);
     }
 }
