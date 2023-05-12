@@ -1,4 +1,4 @@
-package org.digitalstorage.wsn.forge.core;
+package org.digitalstorage.wsn.forge.common.core;
 
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;

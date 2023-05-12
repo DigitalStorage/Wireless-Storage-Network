@@ -1,4 +1,4 @@
-package org.digitalstorage.wsn.forge.core;
+package org.digitalstorage.wsn.forge.common.core;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -14,9 +14,11 @@ import static org.digitalstorage.wsn.core.CommonConstants.MODID;
 public class WSNBlocks {
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
 
-
     public static final RegistryObject<Block> BLOCK_EXAMPLE = BLOCKS.register("example",
-            () -> new Block(BlockBehaviour.Properties.of(Material.AMETHYST)));
+            () -> new Block(BlockBehaviour.Properties.of(Material.AMETHYST))
+    );
+
+
 
     public static void init(Consumer<DeferredRegister> registerConsumer) {
         registerConsumer.accept(BLOCKS);

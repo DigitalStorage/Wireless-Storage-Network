@@ -6,9 +6,9 @@ import net.minecraftforge.registries.DeferredRegister;
 import org.digitalstorage.wsn.WirelessStorageNetwork;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.digitalstorage.wsn.forge.core.WSNBlockTiles;
-import org.digitalstorage.wsn.forge.core.WSNBlocks;
-import org.digitalstorage.wsn.forge.core.WSNItems;
+import org.digitalstorage.wsn.forge.common.core.WSNBlockTiles;
+import org.digitalstorage.wsn.forge.common.core.WSNBlocks;
+import org.digitalstorage.wsn.forge.common.core.WSNItems;
 
 import java.util.function.Consumer;
 
