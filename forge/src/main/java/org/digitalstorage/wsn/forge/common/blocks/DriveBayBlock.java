@@ -1,9 +1,10 @@
 package org.digitalstorage.wsn.forge.common.blocks;
 
-import net.minecraft.world.level.block.Block;
+import org.digitalstorage.wsn.forge.common.network.nodes.DriveBayNode;
 
-public class DriveBayBlock extends Block {
+public class DriveBayBlock extends NetworkBlock {
     public DriveBayBlock(Properties arg) {
         super(arg);
     }
+
 }

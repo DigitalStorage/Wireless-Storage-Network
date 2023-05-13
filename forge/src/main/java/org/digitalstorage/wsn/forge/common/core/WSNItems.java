@@ -9,6 +9,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.digitalstorage.wsn.forge.common.items.TestItem;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -21,6 +22,7 @@ public class WSNItems {
 
     public static final Supplier<Item.Properties> PROPERTIES = () -> new Item.Properties().tab(TAB).stacksTo(1);
 
+    public static final RegistryObject<TestItem> TEST_ITEM = ITEMS.register("test", () -> new TestItem(PROPERTIES.get()));
 
     public static final RegistryObject<BlockItem> CONTROLLER_ITEM = registerBlockItem(WSNBlocks.CONTROLLER_BLOCK);
 
