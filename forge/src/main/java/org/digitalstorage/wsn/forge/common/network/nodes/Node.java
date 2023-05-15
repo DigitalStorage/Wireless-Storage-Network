@@ -15,7 +15,9 @@ import java.util.logging.Level;
 // Handles Network based things
 public interface Node {
     GlobalPos getDimPos();
-    int getEnergyUsage();
+    default int getEnergyUsage() {
+            return 0;
+    }
     UUID getConnectedNetworkUUID();
     UUID getConnectionID();
     UUID getPlayerID();
