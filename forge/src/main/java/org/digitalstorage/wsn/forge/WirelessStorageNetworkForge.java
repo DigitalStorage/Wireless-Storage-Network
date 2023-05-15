@@ -1,18 +1,13 @@
 package org.digitalstorage.wsn.forge;
 
 import dev.architectury.platform.forge.EventBuses;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
 import org.digitalstorage.wsn.WirelessStorageNetwork;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.digitalstorage.wsn.forge.common.core.WSNBlockTiles;
-import org.digitalstorage.wsn.forge.common.core.WSNBlocks;
-import org.digitalstorage.wsn.forge.common.core.WSNItems;
-
-import java.util.function.Consumer;
+import org.digitalstorage.wsn.forge.common.core.registries.WSNBlockTiles;
+import org.digitalstorage.wsn.forge.common.core.registries.WSNBlocks;
+import org.digitalstorage.wsn.forge.common.core.registries.WSNItems;
 
 import static org.digitalstorage.wsn.core.CommonConstants.MODID;
 
@@ -29,4 +24,5 @@ public class WirelessStorageNetworkForge {
         WSNBlockTiles.init(BUS);
         WSNItems.init(BUS);
     }
+
 }

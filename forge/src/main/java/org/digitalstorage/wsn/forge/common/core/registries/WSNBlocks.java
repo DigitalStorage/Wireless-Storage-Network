@@ -1,4 +1,4 @@
-package org.digitalstorage.wsn.forge.common.core;
+package org.digitalstorage.wsn.forge.common.core.registries;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -11,7 +11,6 @@ import org.digitalstorage.wsn.forge.common.blocks.ControllerBlock;
 import org.digitalstorage.wsn.forge.common.blocks.DriveBayBlock;
 import org.digitalstorage.wsn.forge.common.blocks.TerminalBlock;
 
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static org.digitalstorage.wsn.core.CommonConstants.MODID;

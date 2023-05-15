@@ -1,9 +1,12 @@
 package org.digitalstorage.wsn.forge.common.network;
 
-import org.digitalstorage.wsn.forge.common.network.nodes.Node;
-
+import net.minecraftforge.common.capabilities.AutoRegisterCapability;
+import org.digitalstorage.wsn.forge.common.network.admin.Settings;
 import java.util.UUID;
 
+@AutoRegisterCapability
 public interface INetworkManager {
-    boolean ping(UUID network, Node node);
+    INetwork getNetwork(UUID networkID);
+    void createNetwork(UUID ID, Settings settings);
+    void createNetwork(Settings settings);
 }
