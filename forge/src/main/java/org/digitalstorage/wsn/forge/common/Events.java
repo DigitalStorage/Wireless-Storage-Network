@@ -1,4 +1,4 @@
-package org.digitalstorage.wsn.forge.common.core;
+package org.digitalstorage.wsn.forge.common;
 
 
 import net.minecraft.resources.ResourceLocation;
@@ -15,6 +15,12 @@ import static org.digitalstorage.wsn.core.CommonConstants.MODID;
 public class Events {
     @SubscribeEvent
     public static void onLoad(AttachCapabilitiesEvent<Level> event) {
+        Level level = event.getObject();
+        if (level.isClientSide)
+            return;
+        if (level.dimension() != Level.OVERWORLD)
+            return;
+
         event.addCapability(NetworkManager.Provider.KEY, NetworkManager.Provider.INSTANCE);
     }
 }

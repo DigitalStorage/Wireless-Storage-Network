@@ -21,9 +21,9 @@ public class JoinNetworkItem extends Item {
             return super.useOn(context);
 
         if (context.getLevel() instanceof ServerLevel serverLevel && serverLevel.getBlockEntity(context.getClickedPos()) != null && serverLevel.getBlockEntity(context.getClickedPos()) instanceof Node node) {
-            INetwork network = NetworkManager.getNetworkManager(serverLevel).getNetwork(CreateNetworkItem.debugNetworkID);
+            INetwork network = NetworkManager.getNetworkManager(serverLevel.getServer()).getNetwork(CreateNetworkItem.debugNetworkID);
             if (network != null) {
-                node.joinNetwork(serverLevel, CreateNetworkItem.debugNetworkID, context.getPlayer(), null);
+                node.joinNetwork(serverLevel.getServer(), CreateNetworkItem.debugNetworkID, context.getPlayer(), null);
             }
         }
 

@@ -33,12 +33,8 @@ public class ControllerTile extends NetworkTile implements ControllerNode {
             return energyExtracted;
         }
     };
-    private final LazyOptional<IEnergyStorage> energyStorageLazy = LazyOptional.of(() -> storage);
-    private UUID connectionID;
-    private Network network;
-    private UUID networkID;
-    private UUID playerID;
 
+    private final LazyOptional<IEnergyStorage> energyStorageLazy = LazyOptional.of(() -> storage);
 
     public ControllerTile(BlockPos blockPos, BlockState blockState) {
         super(WSNBlockTiles.CONTROLLER_TILE.get(), blockPos, blockState);
@@ -52,39 +48,6 @@ public class ControllerTile extends NetworkTile implements ControllerNode {
         return LazyOptional.empty();
     }
 
-    @Override
-    public GlobalPos getDimPos() {
-        return GlobalPos.of(level.dimension(), getBlockPos());
-    }
-
-    @Override
-    public UUID getConnectedNetworkUUID() {
-        return networkID;
-    }
-
-    @Override
-    public UUID getConnectionID() {
-        return connectionID;
-    }
-
-    @Override
-    public UUID getPlayerID() {
-        return playerID;
-    }
-
-    @Override
-    public Network getConnectedNetwork() {
-        return network;
-    }
-
-    @Override
-    public void connect(Network network, UUID connectionID, UUID playerID) {
-        this.network = network;
-        this.networkID = network.getID();
-        this.connectionID = connectionID;
-        this.playerID = playerID;
-    }
-    
     @Override
     public void open(Player player) {
 

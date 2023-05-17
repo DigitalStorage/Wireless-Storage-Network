@@ -2,6 +2,7 @@ package org.digitalstorage.wsn.forge.common.network.nodes;
 
 
 import net.minecraft.core.GlobalPos;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import org.digitalstorage.wsn.forge.common.network.INetworkManager;
@@ -24,8 +25,8 @@ public interface Node {
     Network getConnectedNetwork();
     void connect(Network network, UUID connectionID, UUID playerID);
 
-    default JoinMessage joinNetwork(ServerLevel level, UUID networkID, Player player, String password) {
-        INetworkManager manager = NetworkManager.getNetworkManager(level);
+    default JoinMessage joinNetwork(MinecraftServer server, UUID networkID, Player player, String password) {
+        INetworkManager manager = NetworkManager.getNetworkManager(server);
         if (manager != null && manager.getNetwork(networkID) != null) {
             return manager.getNetwork(networkID).joinNetwork(this, player, password);
         }

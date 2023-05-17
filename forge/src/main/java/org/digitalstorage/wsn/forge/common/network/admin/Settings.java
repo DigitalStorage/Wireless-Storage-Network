@@ -1,17 +1,20 @@
 package org.digitalstorage.wsn.forge.common.network.admin;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class Settings {
+public class Settings implements INBTSerializable<CompoundTag> {
     private static final String defaultName = "%p's Storage Network";
 
     private String name;
-    private String password = null; // encrypted
+    private String password = ""; // encrypted
     private SecurityLevel security;
     private User owner = null;
     private final HashMap<UUID, User> users = new HashMap<>();
@@ -21,6 +24,10 @@ public class Settings {
         this.owner = new User(player);
         this.name = name == null ? defaultName.replaceAll("%p", player.getName().getString()) : name;
         this.security = security;
+    }
+
+    public Settings(CompoundTag tag) {
+        deserializeNBT(tag);
     }
 
     public boolean isUserLoggedIn(UUID playerID) {
@@ -43,5 +50,49 @@ public class Settings {
 
     public void setPassword(String unEncryptedPassword) {
         this.password = unEncryptedPassword; // TODO: Encrypt
+    }
+
+    @Override
+    public CompoundTag serializeNBT() {
+        CompoundTag settingsTag = new CompoundTag();
+        CompoundTag userDataTag = new CompoundTag();
+        CompoundTag blockedTag = new CompoundTag();
+
+        users.forEach((id, user) -> {
+            userDataTag.put(id.toString(), user.serializeNBT());
+        });
+
+        blocked.forEach(id -> {
+            blockedTag.putUUID(id.toString(), id);
+        });
+
+
+        settingsTag.putString("name", this.name);
+        settingsTag.putString("password", this.password);
+        settingsTag.putString("security", this.security.toString());
+        settingsTag.putUUID("ownerid", this.owner.getUserID());
+        settingsTag.put("owner", this.owner.serializeNBT());
+        settingsTag.put("users", userDataTag);
+        settingsTag.put("blocked", blockedTag);
+
+        return settingsTag;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag tag) {
+        CompoundTag userDataTag = tag.getCompound("users");
+        CompoundTag blockedTag = tag.getCompound("blocked");
+
+        this.name = tag.getString("name");
+        this.password = tag.getString("password");
+        this.security = SecurityLevel.valueOf(tag.getString("security"));
+        this.owner = new User(tag.getUUID("ownerid"), tag.getCompound("owner"));
+
+        userDataTag.getAllKeys().forEach((key) -> {
+            UUID id = UUID.fromString(key);
+            users.put(id, new User(id, userDataTag.getCompound(key)));
+        });
+
+        blockedTag.getAllKeys().forEach(key -> blocked.add(UUID.fromString(key)));
     }
 }

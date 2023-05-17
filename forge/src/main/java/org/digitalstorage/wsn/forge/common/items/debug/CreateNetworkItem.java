@@ -24,7 +24,7 @@ public class CreateNetworkItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand arg3) {
         if (level.isClientSide)
             return super.use(level, player, arg3);
-        NetworkManager.getNetworkManager((ServerLevel) level).createNetwork(debugNetworkID, new Settings(player, null, SecurityLevel.PUBLIC));
+        NetworkManager.getNetworkManager(level.getServer()).createNetwork(debugNetworkID, new Settings(player, null, SecurityLevel.PUBLIC));
         return super.use(level, player, arg3);
     }
 }
