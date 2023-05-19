@@ -6,6 +6,9 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.digitalstorage.wsn.forge.common.blocktiles.ControllerTile;
+import org.digitalstorage.wsn.forge.common.blocktiles.DriveBayTile;
+import org.digitalstorage.wsn.forge.common.blocktiles.TerminalTile;
+
 import static org.digitalstorage.wsn.core.CommonConstants.MODID;
 
 public class WSNBlockTiles {
@@ -18,6 +21,19 @@ public class WSNBlockTiles {
                     ).build(null)
             );
 
+    public static final RegistryObject<BlockEntityType<DriveBayTile>> DRIVE_TILE =
+            TILES.register("drive", () -> BlockEntityType.Builder.of(
+                    DriveBayTile::new,
+                    WSNBlocks.CONTROLLER_BLOCK.get()
+                ).build(null)
+            );
+
+    public static final RegistryObject<BlockEntityType<TerminalTile>> TERMINAL_TILE =
+            TILES.register("terminal", () -> BlockEntityType.Builder.of(
+                        TerminalTile::new,
+                        WSNBlocks.TERMINAL_BLOCK.get()
+                ).build(null)
+            );
 
     public static void init(IEventBus bus) {
         TILES.register(bus);

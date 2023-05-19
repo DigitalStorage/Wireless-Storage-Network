@@ -3,7 +3,6 @@ package org.digitalstorage.wsn.forge.common.network.nodes;
 
 import net.minecraft.core.GlobalPos;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import org.digitalstorage.wsn.forge.common.network.INetworkManager;
 import org.digitalstorage.wsn.forge.common.network.Network;
@@ -11,10 +10,9 @@ import org.digitalstorage.wsn.forge.common.network.NetworkManager;
 import org.digitalstorage.wsn.forge.common.network.admin.JoinMessage;
 
 import java.util.UUID;
-import java.util.logging.Level;
 
 // Handles Network based things
-public interface Node {
+public interface INode {
     GlobalPos getDimPos();
     default int getEnergyUsage() {
             return 0;
@@ -31,5 +29,5 @@ public interface Node {
             return manager.getNetwork(networkID).joinNetwork(this, player, password);
         }
         return null;
-    };
+    }
 }

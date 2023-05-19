@@ -1,18 +1,21 @@
 package org.digitalstorage.wsn.forge.common.blocktiles;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
-import org.digitalstorage.wsn.forge.common.network.nodes.ControllerNode;
+import org.digitalstorage.wsn.forge.common.core.registries.WSNBlockTiles;
+import org.digitalstorage.wsn.forge.common.network.nodes.DriveBayNode;
 
-public class DriveBayTile extends NetworkTile implements ControllerNode {
+import java.util.List;
+
+public class DriveBayTile extends NetworkTile implements DriveBayNode {
     public DriveBayTile(BlockPos blockPos, BlockState blockState) {
-        super(null, blockPos, blockState);
+        super(WSNBlockTiles.DRIVE_TILE.get(), blockPos, blockState);
     }
 
     @Override
-    public void open(Player player) {
-
+    public <T> List<T> getContents() {
+        return (List<T>) List.of(new ItemStack(Items.STONE, 64));
     }
 }

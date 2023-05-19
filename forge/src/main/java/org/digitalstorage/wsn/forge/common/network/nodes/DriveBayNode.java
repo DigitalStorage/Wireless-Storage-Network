@@ -1,8 +1,7 @@
 package org.digitalstorage.wsn.forge.common.network.nodes;
 
-import net.minecraft.core.GlobalPos;
-import net.minecraft.world.entity.player.Player;
+import java.util.List;
 
-public interface DriveBayNode extends Node {
-    void open(Player player);
+public interface DriveBayNode extends INode {
+    <T> List<T> getContents();
 }

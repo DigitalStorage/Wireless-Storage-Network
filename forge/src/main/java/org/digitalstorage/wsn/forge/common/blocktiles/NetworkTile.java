@@ -6,11 +6,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.digitalstorage.wsn.forge.common.network.Network;
-import org.digitalstorage.wsn.forge.common.network.nodes.Node;
+import org.digitalstorage.wsn.forge.common.network.nodes.INode;
 
 import java.util.UUID;
 
-public abstract class NetworkTile extends BlockEntity implements Node {
+public abstract class NetworkTile extends BlockEntity implements INode {
 
     private UUID connectionID;
     private Network network;

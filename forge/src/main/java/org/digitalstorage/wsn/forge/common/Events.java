@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.digitalstorage.wsn.forge.common.network.NetworkManager;
@@ -21,6 +22,6 @@ public class Events {
         if (level.dimension() != Level.OVERWORLD)
             return;
 
-        event.addCapability(NetworkManager.Provider.KEY, NetworkManager.Provider.INSTANCE);
+        event.addCapability(NetworkManager.KEY, NetworkManager.getCapabilityProvider());
     }
 }

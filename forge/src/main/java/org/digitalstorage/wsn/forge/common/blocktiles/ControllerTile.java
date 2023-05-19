@@ -47,9 +47,4 @@ public class ControllerTile extends NetworkTile implements ControllerNode {
 
         return LazyOptional.empty();
     }
-
-    @Override
-    public void open(Player player) {
-
-    }
 }

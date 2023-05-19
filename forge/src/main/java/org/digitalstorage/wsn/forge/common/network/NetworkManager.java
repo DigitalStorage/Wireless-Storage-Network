@@ -1,11 +1,7 @@
 package org.digitalstorage.wsn.forge.common.network;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -13,50 +9,23 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
-import org.checkerframework.checker.units.qual.C;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.fml.Bindings;
 import org.digitalstorage.wsn.forge.common.core.Capabilities;
 import org.digitalstorage.wsn.forge.common.network.admin.Settings;
-import org.digitalstorage.wsn.forge.common.network.nodes.Node;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.digitalstorage.wsn.core.CommonConstants.MODID;
 
-public class NetworkManager implements INetworkManager {
-    public static class Provider implements ICapabilitySerializable<CompoundTag> {
-        public static final ResourceLocation KEY = new ResourceLocation(MODID, "manager");
-        public static final Provider INSTANCE = new Provider();
-
-        private final INetworkManager manager = new NetworkManager();
-        private final LazyOptional<INetworkManager> managerLazy = LazyOptional.of(() -> manager);
-
-        private Provider() {}
-
-        @Override
-        public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction arg) {
-            if (capability == Capabilities.NETWORK_MANAGER)
-                return managerLazy.cast();
-
-            return LazyOptional.empty();
-        }
-
-        @Override
-        public CompoundTag serializeNBT() {
-            CompoundTag DATA = new CompoundTag();
-            DATA.put("networks", manager.serializeNBT());
-            return DATA;
-        }
-
-        @Override
-        public void deserializeNBT(CompoundTag managerTag) {
-            manager.deserializeNBT(managerTag);
-        }
-    }
+public class NetworkManager implements INetworkManager, ICapabilitySerializable<CompoundTag> {
+    private static Optional<INetworkManager> currentManager = Optional.empty();
+    public static final ResourceLocation KEY = new ResourceLocation(MODID, "manager");
 
     public static INetworkManager getNetworkManager(MinecraftServer server) {
         ServerLevel level = server.getLevel(Level.OVERWORLD);
@@ -67,7 +36,32 @@ public class NetworkManager implements INetworkManager {
         return null;
     }
 
+    public static ICapabilityProvider getCapabilityProvider() {
+        currentManager.ifPresent(iNetworkManager -> iNetworkManager.unregisterTicker());
+        currentManager = null;
+        NetworkManager manager = new NetworkManager();
+        currentManager = Optional.of(manager);
+        currentManager.orElseThrow().registerTicker();
+        return manager;
+    }
+
     private final HashMap<UUID, INetwork> networks = new HashMap<>();
+    private final LazyOptional<INetworkManager> manager = LazyOptional.of(() -> this);
+    private AtomicBoolean registeredTicker = new AtomicBoolean(false);
+
+    private NetworkManager() {
+        if (currentManager != null)
+            throw new IllegalStateException("Cannot have more then one NetworkManager loaded at any point!");
+        NetworkManager.currentManager = Optional.of(this);
+    }
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction arg) {
+        if (capability == Capabilities.NETWORK_MANAGER)
+            return manager.cast();
+
+        return LazyOptional.empty();
+    }
 
     @Override
     public INetwork getNetwork(UUID networkID) {
@@ -93,12 +87,38 @@ public class NetworkManager implements INetworkManager {
     }
 
     @Override
+    public void registerTicker() {
+        if (registeredTicker.get()) return;
+
+        Bindings.getForgeBus().get().addListener(this::tick);
+        registeredTicker.set(true);
+    }
+
+    @Override
+    public void unregisterTicker() {
+        if (!registeredTicker.get()) return;
+
+        Bindings.getForgeBus().get().unregister(this);
+        registeredTicker.set(false);
+    }
+
+    @Override
+    public void tick(TickEvent.LevelTickEvent event) {
+        if (event.level.dimension() == Level.OVERWORLD && !event.level.isClientSide)  {
+            networks.forEach((id, network) -> network.tick());
+        }
+    }
+
+    @Override
     public CompoundTag serializeNBT() {
+        CompoundTag managerTag = new CompoundTag();
         CompoundTag networksTag = new CompoundTag();
         networks.forEach((id, iNetwork) -> {
             networksTag.put(id.toString(), iNetwork.serializeNBT());
         });
-        return networksTag;
+        managerTag.put("networks", networksTag);
+
+        return managerTag;
     }
 
     @Override

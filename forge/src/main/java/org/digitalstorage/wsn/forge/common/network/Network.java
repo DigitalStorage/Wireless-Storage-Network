@@ -5,14 +5,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.INBTSerializable;
 import org.digitalstorage.wsn.forge.common.network.admin.JoinMessage;
 import org.digitalstorage.wsn.forge.common.network.admin.Settings;
-import org.digitalstorage.wsn.forge.common.network.nodes.Node;
+import org.digitalstorage.wsn.forge.common.network.nodes.INode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
 public class Network implements INetwork, INBTSerializable<CompoundTag> {
-    private final ArrayList<Node> nodes = new ArrayList<>();
+    private final ArrayList<INode> nodes = new ArrayList<>();
 
     // connectionID, playerUUID
     private final HashMap<UUID, UUID> connectionIDs = new HashMap<>();
@@ -41,7 +41,7 @@ public class Network implements INetwork, INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public JoinMessage joinNetwork(Node node, Player player, String password) {
+    public JoinMessage joinNetwork(INode node, Player player, String password) {
         if (nodes.contains(node))
             return JoinMessage.ALREADY_JOINED;
 
@@ -56,7 +56,7 @@ public class Network implements INetwork, INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public boolean joinNetwork(Node node, UUID playerID) {
+    public boolean joinNetwork(INode node, UUID playerID) {
         if (nodes.contains(node))
             return true;
 
@@ -77,7 +77,7 @@ public class Network implements INetwork, INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public void disconnectNode(Node node) {
+    public void disconnectNode(INode node) {
         if (nodes.contains(node)) {
             nodes.remove(node);
             connectionIDs.remove(node.getConnectionID());

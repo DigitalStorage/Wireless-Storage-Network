@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.digitalstorage.wsn.forge.common.blocktiles.ControllerTile;
 import org.jetbrains.annotations.Nullable;
 
-public class ControllerBlock extends NetworkBlock implements EntityBlock {
+public class ControllerBlock extends NetworkBlock {
     public ControllerBlock(Properties arg) {
         super(arg);
     }
