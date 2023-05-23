@@ -2,7 +2,7 @@ package org.digitalstorage.wsn.forge.common.core;
 
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityToken;
-import org.digitalstorage.wsn.forge.common.network.INetworkManager;
+import org.digitalstorage.wsn.common.network.INetworkManager;
 
 import static net.minecraftforge.common.capabilities.CapabilityManager.get;
 

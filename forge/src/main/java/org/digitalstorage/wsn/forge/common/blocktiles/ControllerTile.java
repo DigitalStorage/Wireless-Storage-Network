@@ -2,7 +2,8 @@ package org.digitalstorage.wsn.forge.common.blocktiles;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.GlobalPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -10,9 +11,10 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
+import org.digitalstorage.wsn.common.network.INetwork;
+import org.digitalstorage.wsn.common.network.nodes.ControllerNode;
+import org.digitalstorage.wsn.common.network.nodes.INode;
 import org.digitalstorage.wsn.forge.common.core.registries.WSNBlockTiles;
-import org.digitalstorage.wsn.forge.common.network.Network;
-import org.digitalstorage.wsn.forge.common.network.nodes.ControllerNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,4 +49,5 @@ public class ControllerTile extends NetworkTile implements ControllerNode {
 
         return LazyOptional.empty();
     }
+
 }

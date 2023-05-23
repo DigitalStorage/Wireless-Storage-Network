@@ -7,13 +7,19 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fml.Bindings;
+import net.minecraftforge.fml.ModList;
+import org.digitalstorage.wsn.common.network.INetwork;
+import org.digitalstorage.wsn.common.network.INetworkManager;
+import org.digitalstorage.wsn.common.network.admin.ISettings;
 import org.digitalstorage.wsn.forge.common.core.Capabilities;
+import org.digitalstorage.wsn.forge.common.core.compat.Mekanism;
 import org.digitalstorage.wsn.forge.common.network.admin.Settings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,11 +27,25 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.digitalstorage.wsn.core.CommonConstants.MODID;
+import static org.digitalstorage.wsn.common.core.CommonConstants.MODID;
 
-public class NetworkManager implements INetworkManager, ICapabilitySerializable<CompoundTag> {
+public class ForgeNetworkManager implements INetworkManager, ICapabilitySerializable<CompoundTag> {
     private static Optional<INetworkManager> currentManager = Optional.empty();
     public static final ResourceLocation KEY = new ResourceLocation(MODID, "manager");
+    public static final ArrayList<Capability<?>> VALID_CAPABILITIES = new ArrayList<>();
+
+    static {
+        registerCapability(ForgeCapabilities.FLUID_HANDLER_ITEM);
+        registerCapability(ForgeCapabilities.ITEM_HANDLER);
+        if (ModList.get().isLoaded("mekanism")) {
+            registerCapability(Mekanism.GAS);
+        }
+    }
+
+    private static void registerCapability(Capability<?> capability) {
+        if (VALID_CAPABILITIES.contains(capability)) return;
+        VALID_CAPABILITIES.add(capability);
+    }
 
     public static INetworkManager getNetworkManager(MinecraftServer server) {
         ServerLevel level = server.getLevel(Level.OVERWORLD);
@@ -39,20 +59,20 @@ public class NetworkManager implements INetworkManager, ICapabilitySerializable<
     public static ICapabilityProvider getCapabilityProvider() {
         currentManager.ifPresent(iNetworkManager -> iNetworkManager.unregisterTicker());
         currentManager = null;
-        NetworkManager manager = new NetworkManager();
+        ForgeNetworkManager manager = new ForgeNetworkManager();
         currentManager = Optional.of(manager);
         currentManager.orElseThrow().registerTicker();
         return manager;
     }
 
-    private final HashMap<UUID, INetwork> networks = new HashMap<>();
+    private final HashMap<UUID, ForgeNetwork> networks = new HashMap<>();
     private final LazyOptional<INetworkManager> manager = LazyOptional.of(() -> this);
     private AtomicBoolean registeredTicker = new AtomicBoolean(false);
 
-    private NetworkManager() {
+    private ForgeNetworkManager() {
         if (currentManager != null)
-            throw new IllegalStateException("Cannot have more then one NetworkManager loaded at any point!");
-        NetworkManager.currentManager = Optional.of(this);
+            throw new IllegalStateException("Cannot have more then one ForgeNetworkManager loaded at any point!");
+        ForgeNetworkManager.currentManager = Optional.of(this);
     }
 
     @Override
@@ -65,7 +85,17 @@ public class NetworkManager implements INetworkManager, ICapabilitySerializable<
 
     @Override
     public INetwork getNetwork(UUID networkID) {
-        return networks.containsKey(networkID) ? networks.get(networkID) : null;
+        return networks.containsKey(networkID) ? (INetwork) networks.get(networkID) : null;
+    }
+
+    @Override
+    public <T extends ISettings> void createNetwork(UUID ID, T settings) {
+        networks.put(ID, new ForgeNetwork(ID, (Settings) settings));
+    }
+
+    @Override
+    public <T extends ISettings> void createNetwork(T settings) {
+        createNetwork(createNetworkID(), settings);
     }
 
     private UUID createNetworkID() {
@@ -77,20 +107,15 @@ public class NetworkManager implements INetworkManager, ICapabilitySerializable<
         }
 
         if (attempts > 20)
-            throw new IllegalStateException("Unable to create Network ID, couldnt find an unused UUID to use");
+            throw new IllegalStateException("Unable to create ForgeNetwork ID, couldnt find an unused UUID to use");
 
         return ID;
-    }
-
-    public void createNetwork(Settings settings) {
-        createNetwork(createNetworkID(), settings);
     }
 
     @Override
     public void registerTicker() {
         if (registeredTicker.get()) return;
 
-        Bindings.getForgeBus().get().addListener(this::tick);
         registeredTicker.set(true);
     }
 
@@ -103,10 +128,8 @@ public class NetworkManager implements INetworkManager, ICapabilitySerializable<
     }
 
     @Override
-    public void tick(TickEvent.LevelTickEvent event) {
-        if (event.level.dimension() == Level.OVERWORLD && !event.level.isClientSide)  {
-            networks.forEach((id, network) -> network.tick());
-        }
+    public void tick() {
+
     }
 
     @Override
@@ -128,13 +151,9 @@ public class NetworkManager implements INetworkManager, ICapabilitySerializable<
             UUID id = UUID.fromString(networkString);
             CompoundTag networkTag = networks.getCompound(networkString);
 
-            Network network = new Network(id, networkTag);
+            ForgeNetwork network = new ForgeNetwork(id, networkTag);
             this.networks.put(id, network);
         });
-    }
-
-    public void createNetwork(UUID ID, Settings settings) {
-        networks.put(ID, new Network(ID, settings));
     }
 
 }

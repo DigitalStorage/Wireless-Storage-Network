@@ -1,18 +1,29 @@
 package org.digitalstorage.wsn.forge.common.network;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.INBTSerializable;
-import org.digitalstorage.wsn.forge.common.network.admin.JoinMessage;
+import org.digitalstorage.wsn.common.network.INetwork;
+import org.digitalstorage.wsn.common.network.INetworkStorage;
+import org.digitalstorage.wsn.common.network.admin.JoinMessage;
+import org.digitalstorage.wsn.common.network.admin.JoinResponse;
+import org.digitalstorage.wsn.common.network.nodes.INode;
 import org.digitalstorage.wsn.forge.common.network.admin.Settings;
-import org.digitalstorage.wsn.forge.common.network.nodes.INode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.stream.Stream;
 
-public class Network implements INetwork, INBTSerializable<CompoundTag> {
+/**
+ * Make it so when a player is logged into a network, we allow the node they are connecting to connect.
+ *
+ * If not logged in, make the player log in and then do the above.
+ */
+public class ForgeNetwork implements INetwork, INBTSerializable<CompoundTag> {
     private final ArrayList<INode> nodes = new ArrayList<>();
+    private final NetworkStorage storage;
 
     // connectionID, playerUUID
     private final HashMap<UUID, UUID> connectionIDs = new HashMap<>();
@@ -20,14 +31,16 @@ public class Network implements INetwork, INBTSerializable<CompoundTag> {
     private Settings settings;
 
 
-    public Network(UUID ID, Settings settings) {
+    public ForgeNetwork(UUID ID, Settings settings) {
         this.ID = ID;
         this.settings = settings;
+        this.storage = new NetworkStorage(this);
     }
 
-    public Network(UUID ID, CompoundTag tag) {
+    public ForgeNetwork(UUID ID, CompoundTag tag) {
         this.ID = ID;
         deserializeNBT(tag);
+        this.storage = new NetworkStorage(this);
     }
 
     @Override
@@ -43,10 +56,11 @@ public class Network implements INetwork, INBTSerializable<CompoundTag> {
     @Override
     public JoinMessage joinNetwork(INode node, Player player, String password) {
         if (nodes.contains(node))
-            return JoinMessage.ALREADY_JOINED;
+            return new JoinMessage(Component.empty(), JoinResponse.ALREADY_JOINED);
 
         JoinMessage message = settings.loginUser(player, password);
-        if (message == JoinMessage.SUCCESS) {
+
+        if (message.getResponse() == JoinResponse.SUCESS) {
             UUID connectionID = UUID.randomUUID();
             connectionIDs.put(connectionID, player.getUUID());
             nodes.add(node);
@@ -87,6 +101,16 @@ public class Network implements INetwork, INBTSerializable<CompoundTag> {
     @Override
     public void tick() {
 
+    }
+
+    @Override
+    public Stream<INode> getNodes() {
+        return nodes.stream();
+    }
+
+    @Override
+    public INetworkStorage getStorageContents() {
+        return storage;
     }
 
     @Override

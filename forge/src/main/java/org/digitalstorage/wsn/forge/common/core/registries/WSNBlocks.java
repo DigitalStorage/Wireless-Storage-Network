@@ -13,7 +13,7 @@ import org.digitalstorage.wsn.forge.common.blocks.TerminalBlock;
 
 import java.util.function.Supplier;
 
-import static org.digitalstorage.wsn.core.CommonConstants.MODID;
+import static org.digitalstorage.wsn.common.core.CommonConstants.MODID;
 
 public class WSNBlocks {
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);

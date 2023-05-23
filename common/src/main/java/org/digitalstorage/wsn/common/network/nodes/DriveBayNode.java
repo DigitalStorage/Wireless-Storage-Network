@@ -1,4 +1,4 @@
-package org.digitalstorage.wsn.forge.common.network.nodes;
+package org.digitalstorage.wsn.common.network.nodes;
 
 import java.util.List;
 

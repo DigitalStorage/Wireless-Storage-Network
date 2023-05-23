@@ -1,4 +1,4 @@
-package org.digitalstorage.wsn.forge.common.network.nodes;
+package org.digitalstorage.wsn.common.network.nodes;
 
 // Take from System and put into inventory
 

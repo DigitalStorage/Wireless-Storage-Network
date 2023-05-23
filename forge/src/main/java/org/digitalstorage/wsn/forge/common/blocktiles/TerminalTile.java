@@ -2,8 +2,8 @@ package org.digitalstorage.wsn.forge.common.blocktiles;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import org.digitalstorage.wsn.common.network.nodes.TerminalNode;
 import org.digitalstorage.wsn.forge.common.core.registries.WSNBlockTiles;
-import org.digitalstorage.wsn.forge.common.network.nodes.TerminalNode;
 
 public class TerminalTile extends NetworkTile implements TerminalNode {
 

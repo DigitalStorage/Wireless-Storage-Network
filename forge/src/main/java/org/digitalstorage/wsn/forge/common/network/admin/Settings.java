@@ -1,17 +1,21 @@
 package org.digitalstorage.wsn.forge.common.network.admin;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.INBTSerializable;
+import org.digitalstorage.wsn.common.network.admin.ISettings;
+import org.digitalstorage.wsn.common.network.admin.JoinMessage;
+import org.digitalstorage.wsn.common.network.admin.JoinResponse;
+import org.digitalstorage.wsn.common.network.admin.SecurityLevel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class Settings implements INBTSerializable<CompoundTag> {
-    private static final String defaultName = "%p's Storage Network";
+public class Settings implements ISettings, INBTSerializable<CompoundTag> {
+    private static final String defaultName = "%p's Storage ForgeNetwork";
 
     private String name;
     private String password = ""; // encrypted
@@ -36,15 +40,15 @@ public class Settings implements INBTSerializable<CompoundTag> {
 
     public JoinMessage loginUser(Player player, String password) {
         if (users.containsKey(player.getUUID()))
-            return JoinMessage.ALREADY_JOINED;
+            return new JoinMessage(Component.empty(), JoinResponse.ALREADY_JOINED);
         if (blocked.contains(player.getUUID()))
-            return JoinMessage.DENIED_ACCESS;
+            return new JoinMessage(Component.empty(), JoinResponse.DENIED);
 
         if (security == SecurityLevel.PUBLIC || this.password == password) {
             users.put(player.getUUID(), new User(player));
-            return JoinMessage.SUCCESS;
+            return new JoinMessage(Component.empty(), JoinResponse.SUCESS);
         } else {
-            return JoinMessage.WRONG_PASSWORD;
+            return new JoinMessage(Component.empty(), JoinResponse.DENIED);
         }
     }
 

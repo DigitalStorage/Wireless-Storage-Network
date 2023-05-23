@@ -1,16 +1,15 @@
 package org.digitalstorage.wsn.forge.common;
 
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.digitalstorage.wsn.forge.common.network.NetworkManager;
+import org.digitalstorage.wsn.common.network.INetworkManager;
+import org.digitalstorage.wsn.forge.common.network.ForgeNetworkManager;
 
-import static org.digitalstorage.wsn.core.CommonConstants.MODID;
+import static org.digitalstorage.wsn.common.core.CommonConstants.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID)
 public class Events {
@@ -22,6 +21,11 @@ public class Events {
         if (level.dimension() != Level.OVERWORLD)
             return;
 
-        event.addCapability(NetworkManager.KEY, NetworkManager.getCapabilityProvider());
+        event.addCapability(ForgeNetworkManager.KEY, ForgeNetworkManager.getCapabilityProvider());
+    }
+
+    @SubscribeEvent
+    public static void onRegisterCaps(RegisterCapabilitiesEvent event) {
+        event.register(INetworkManager.class);
     }
 }

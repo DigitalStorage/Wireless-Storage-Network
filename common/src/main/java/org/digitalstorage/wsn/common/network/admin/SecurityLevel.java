@@ -1,4 +1,4 @@
-package org.digitalstorage.wsn.forge.common.network.admin;
+package org.digitalstorage.wsn.common.network.admin;
 
 public enum SecurityLevel {
     PUBLIC,

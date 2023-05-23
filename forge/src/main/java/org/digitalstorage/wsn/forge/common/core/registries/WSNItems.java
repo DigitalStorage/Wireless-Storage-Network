@@ -13,7 +13,7 @@ import org.digitalstorage.wsn.forge.common.items.debug.JoinNetworkItem;
 
 import java.util.function.Supplier;
 
-import static org.digitalstorage.wsn.core.CommonConstants.MODID;
+import static org.digitalstorage.wsn.common.core.CommonConstants.MODID;
 import static org.digitalstorage.wsn.forge.common.core.Constants.TAB;
 
 public class WSNItems {

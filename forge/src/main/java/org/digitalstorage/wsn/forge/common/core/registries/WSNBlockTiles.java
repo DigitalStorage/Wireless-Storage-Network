@@ -9,7 +9,7 @@ import org.digitalstorage.wsn.forge.common.blocktiles.ControllerTile;
 import org.digitalstorage.wsn.forge.common.blocktiles.DriveBayTile;
 import org.digitalstorage.wsn.forge.common.blocktiles.TerminalTile;
 
-import static org.digitalstorage.wsn.core.CommonConstants.MODID;
+import static org.digitalstorage.wsn.common.core.CommonConstants.MODID;
 
 public class WSNBlockTiles {
     private static final DeferredRegister<BlockEntityType<?>> TILES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);

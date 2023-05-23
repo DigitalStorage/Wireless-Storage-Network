@@ -3,6 +3,7 @@ package org.digitalstorage.wsn.forge.common.network.admin;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.INBTSerializable;
+import org.digitalstorage.wsn.common.network.admin.UserPermissions;
 
 import java.util.ArrayList;
 import java.util.Arrays;

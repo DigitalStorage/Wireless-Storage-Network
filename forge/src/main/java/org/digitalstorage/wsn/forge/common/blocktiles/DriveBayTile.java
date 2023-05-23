@@ -4,8 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
+import org.digitalstorage.wsn.common.network.nodes.DriveBayNode;
 import org.digitalstorage.wsn.forge.common.core.registries.WSNBlockTiles;
-import org.digitalstorage.wsn.forge.common.network.nodes.DriveBayNode;
 
 import java.util.List;
 
